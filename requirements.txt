@@ -1,0 +1,3 @@
+git+https://github.com/digitalocean/pydo.git
+requests
+discord-webhook
