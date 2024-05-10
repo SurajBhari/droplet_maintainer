@@ -48,6 +48,8 @@ This is a simple script that will stop and start Droplet instances if it fails t
 ## Configuration
 
 Since whole point is to maintain Droplet instnace. this is made to be hosted on a different machine. that have no connection to the Droplet instance you are monitoring.
+
+You can get digitalocean_token from [Application & API page](https://cloud.digitalocean.com/account/api/tokens).
 ```
 {
     "i-03cdcee6a9ea8be78": {
