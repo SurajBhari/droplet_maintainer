@@ -8,7 +8,7 @@ from pydo import Client
 def get_second():
     return int(str(int(time.time()))[-1]) # see this logic ? its so complex. yet so simple
 
-logo_link = "https://raw.githubusercontent.com/SurajBhari/droplet_maitainer/main/256_droplet_maintainer.png"
+logo_link = "https://raw.githubusercontent.com/SurajBhari/droplet_maintainer/main/256_droplet_maintainer.png"
 project_name = "Droplet Maintainer"
 count = 1
 last_second = get_second()
@@ -34,6 +34,7 @@ while True:
             try:
                 response = requests.get(url, headers=headers, timeout=timeout)
             except Exception as e:
+                print(e)
                 print(f"{instance} is down!")
                 tolerance -= 1
                 continue
@@ -58,8 +59,8 @@ while True:
                 embeds=[embed]
             )
             response = webhook.execute()
-        droplet = client = Client(token=config[instance]['digitalocean_token']) 
-        # insert code for restarting the droplet here
+        droplet = Client(token=config[instance]['digitalocean_token']) 
+        droplet.droplet_actions.post(instance, {'type': 'power_cycle'})
         if config[instance]['discord']:
             embed = DiscordEmbed(
                 title=f"{instance} has been restarted!", 
