@@ -9,6 +9,7 @@
         "digitalocean_token":"",
         "interval": 5,
         "tolerance": 5,
-        "discord": ""
+        "discord": "",
+        "max_down": 3 
     }
 }

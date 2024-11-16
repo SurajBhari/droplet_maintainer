@@ -13,6 +13,7 @@ project_name = "Droplet Maintainer"
 count = 1
 last_second = get_second()
 
+continous_down = {} # store continous down instances and the count 
 while True:
     while last_second == get_second():
         time.sleep(0.1)
@@ -44,7 +45,10 @@ while True:
                 break
             print(f"{instance} said {response.status_code}!")
             tolerance -= 1
+        if continous_down.get(instance, 0) >= config[instance]['max_down']:
+            continue # stop caring if its been down for so long so that i can actually do stuff and fix it 
         if ok:
+            continous_down[instance] = 0
             continue
         if config[instance]['discord']:
             embed = DiscordEmbed(
@@ -59,6 +63,7 @@ while True:
                 embeds=[embed]
             )
             response = webhook.execute()
+        continous_down[instance] = continous_down.get(instance, 0) + 1
         droplet = Client(token=config[instance]['digitalocean_token']) 
         droplet.droplet_actions.post(instance, {'type': 'power_cycle'})
         if config[instance]['discord']:
