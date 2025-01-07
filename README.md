@@ -4,44 +4,14 @@ This is a simple script that will stop and start Droplet instances if it fails t
 
 
 ## Flowchart
-```
-+-------------------+
-|       Start       |
-+-------------------+
-        |
-        v
-+-------------------+
-|   Initialize      |
-|    variables      |
-+-------------------+
-        |
-        v
-+-------------------+
-|  Enter while      |
-|    loop           |
-+-------------------+        
-        |                    
-        |                    
-        |<-------------------+<-----+
-        |                    |      |
-        v                    |      |      
-+------------------==-+      |      |
-|  URL reachable      |>-----+  YES |      
-|  for T amount       |             |
-+---------------------+             |
-|   Continue loop     |             |
-|       |             |             |
-+-------|-------------+             |
-        |       v  ^                |
-        |       |no|                |
-        | No    +--+                |
-        v                           |
-+------------------------+          |
-|Restart the EC2 server  |          |
-| (handle                |          |
-|  unreachable URL)      |          |
-+------------------------+          |
-        + --------->----------------+
+```mermaid
+graph TD
+  A[Start] --> B[Initialize variables]
+  B --> C[Enter while loop]
+  C --> D{URL reachable for T amount?}
+  D -->|Yes| C
+  D -->|No| E[Restart the EC2 server<br>handle unreachable URL]
+  E --> C
 ```
 
 
