@@ -69,7 +69,10 @@ while True:
                         url=config[instance]['discord'], 
                     )
                 webhook.content = f"<t:{int(time.time())}:R> | {instance} is up! Response code: {response.status_code} "
-                webhook.execute()
+                if instance in discord_message_dict:
+                    webhook.edit() # if we already have a message, edit it
+                else:
+                    webhook.execute()
                 discord_message_dict[instance] = webhook
                 ok = True
                 break
