@@ -18,7 +18,12 @@ config = json.load(open('config.json', "r"))
 
 discord_message_dict = {} # store discord messages so that we dont spam the maintainer with messages
 # notify all of the discord that the maintainer is starting 
+
+def actual_instance_id(instance):
+    return instance.split("~")[0]
+
 for instance in config.keys():
+    instance = actual_instance_id(instance) # get the actual instance id
     if not config[instance]['discord']:
         continue
     embed = DiscordEmbed(
@@ -39,6 +44,7 @@ while True:
     last_second = get_second()
     config = json.load(open('config.json', "r"))
     for instance in config.keys():
+        instance = actual_instance_id(instance) # get the actual instance id
         if count % config[instance]['interval'] != 0:
             print(f"{count}. Not time to check {instance}...")
             continue # Skip if not time to check
@@ -59,7 +65,7 @@ while True:
                 tolerance -= 1
                 continue
             if response.status_code == location["response_code"]:
-                print(f"{instance} Responded with correct code!")
+                print(f"{instance} Responded with correct code! {response.text}")
                 if instance in discord_message_dict:
                     webhook = discord_message_dict[instance]
                 else:
@@ -68,7 +74,7 @@ while True:
                         avatar_url=logo_link, 
                         url=config[instance]['discord'], 
                     )
-                webhook.content = f"<t:{int(time.time())}:R> | {instance} is up! Response code: {response.status_code} "
+                webhook.content = f"<t:{int(time.time())}:R> | {instance} is up! Response code: {response.status_code} {response.text}"
                 if instance in discord_message_dict:
                     webhook.edit() # if we already have a message, edit it
                 else:
