@@ -65,7 +65,7 @@ while True:
                 tolerance -= 1
                 continue
             if response.status_code == location["response_code"]:
-                print(f"{instance} Responded with correct code! {response.text}")
+                print(f"{instance} Responded with correct code! {response.text[:15]}")
                 if instance in discord_message_dict:
                     webhook = discord_message_dict[instance]
                 else:
@@ -74,7 +74,7 @@ while True:
                         avatar_url=logo_link, 
                         url=config[instance]['discord'], 
                     )
-                webhook.content = f"<t:{int(time.time())}:R> | {instance} is up! Response code: {response.status_code} {response.text}"
+                webhook.content = f"<t:{int(time.time())}:R> | {instance} is up! Response code: {response.status_code} {response.text[:15]}"
                 if instance in discord_message_dict:
                     webhook.edit() # if we already have a message, edit it
                 else:
