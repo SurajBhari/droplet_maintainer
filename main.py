@@ -20,10 +20,10 @@ discord_message_dict = {} # store discord messages so that we dont spam the main
 # notify all of the discord that the maintainer is starting 
 
 def actual_instance_id(instance):
+    """Get the actual instance id from the config"""
     return instance.split("~")[0]
 
 for instance in config.keys():
-    instance = actual_instance_id(instance) # get the actual instance id
     if not config[instance]['discord']:
         continue
     embed = DiscordEmbed(
@@ -44,7 +44,6 @@ while True:
     last_second = get_second()
     config = json.load(open('config.json', "r"))
     for instance in config.keys():
-        instance = actual_instance_id(instance) # get the actual instance id
         if count % config[instance]['interval'] != 0:
             print(f"{count}. Not time to check {instance}...")
             continue # Skip if not time to check
@@ -65,7 +64,7 @@ while True:
                 tolerance -= 1
                 continue
             if response.status_code == location["response_code"]:
-                print(f"{instance} Responded with correct code! {response.text[:15]}")
+                print(f"{instance} Responded with correct code! {response.text[:15]}...")
                 if instance in discord_message_dict:
                     webhook = discord_message_dict[instance]
                 else:
@@ -74,7 +73,7 @@ while True:
                         avatar_url=logo_link, 
                         url=config[instance]['discord'], 
                     )
-                webhook.content = f"<t:{int(time.time())}:R> | {instance} is up! Response code: {response.status_code} {response.text[:15]}"
+                webhook.content = f"<t:{int(time.time())}:R> | {instance} is up! Response code: {response.status_code} {response.text[:15]}..."
                 if instance in discord_message_dict:
                     webhook.edit() # if we already have a message, edit it
                 else:
@@ -82,7 +81,7 @@ while True:
                 discord_message_dict[instance] = webhook
                 ok = True
                 break
-            print(f"{instance} said {response.status_code}!")
+            print(f"{instance} said {response.status_code}! {response.text[:15]}...")
             tolerance -= 1
         if continous_down.get(instance, 0) >= config[instance]['max_down']:
             continue # stop caring if its been down for so long so that i can actually do stuff and fix it 
@@ -106,7 +105,7 @@ while True:
                 del discord_message_dict[instance] # remove the message so that we can send a new one
         continous_down[instance] = continous_down.get(instance, 0) + 1
         droplet = Client(token=config[instance]['digitalocean_token']) 
-        droplet.droplet_actions.post(instance, {'type': 'power_cycle'})
+        droplet.droplet_actions.post(actual_instance_id(instance), {'type': 'power_cycle'})
         if config[instance]['discord']:
             embed = DiscordEmbed(
                 title=f"{instance} has been restarted!", 
