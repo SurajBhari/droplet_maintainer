@@ -30,9 +30,9 @@ for instance in config.keys():
         if not api_key:
             continue
         monitor_name = config[instance]['cronitor'].get('monitor_name', instance)
-        cronitor.api_key = config[instance]['cronitor']['api_key']
-        monitor = cronitor.Monitor(monitor_name)
-        monitor.ping("ok")
+        monitor = cronitor.Monitor(key=monitor_name, api_key=api_key)
+        monitor.ping(state="run")
+        monitor.ping(state="complete")
 
 for instance in config.keys():
     if not config[instance]['discord']:
@@ -56,6 +56,10 @@ while True:
     config = json.load(open('config.json', "r"))
     for instance in config.keys():
         monitor = None
+        
+        if count % config[instance]['interval'] != 0:
+            print(f"{count}. Not time to check {instance}...")
+            continue # Skip if not time to check
         if 'cronitor' in config[instance]:
             api_key = config[instance]['cronitor'].get('api_key', '')
             if not api_key:
@@ -63,11 +67,7 @@ while True:
             monitor_name = config[instance]['cronitor'].get('monitor_name', instance)
             cronitor.api_key = config[instance]['cronitor']['api_key']
             monitor = cronitor.Monitor(monitor_name)
-            monitor.ping("run")
-        
-        if count % config[instance]['interval'] != 0:
-            print(f"{count}. Not time to check {instance}...")
-            continue # Skip if not time to check
+            monitor.ping(state="run")
         print(f"Checking {instance}...")
         location = config[instance]['location']
         url = location['url']
@@ -87,7 +87,7 @@ while True:
             if response.status_code == location["response_code"]:
                 print(f"{instance} Responded with correct code! {response.text[:15]}...")
                 if monitor: 
-                    monitor.ping("ok")
+                    monitor.ping(state="ok")
                 if instance in discord_message_dict:
                     webhook = discord_message_dict[instance]
                 else:
@@ -112,6 +112,7 @@ while True:
             continous_down[instance] = 0
             continue
         if config[instance]['discord']:
+            monitor.ping(state="fail")
             embed = DiscordEmbed(
                 title=f"{url} is down!", 
                 color=0xf54242,
