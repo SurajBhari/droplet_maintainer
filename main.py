@@ -87,7 +87,7 @@ while True:
             if response.status_code == location["response_code"]:
                 print(f"{instance} Responded with correct code! {response.text[:15]}...")
                 if monitor: 
-                    monitor.ping(state="ok")
+                    monitor.ping(state="complete")
                 if instance in discord_message_dict:
                     webhook = discord_message_dict[instance]
                 else:
