@@ -1,6 +1,12 @@
 # Droplet Maintainer
 
-This is a simple script that will stop and start Droplet instances if it fails to GET a particular URL. This is useful for maintaining Droplet instances that are not behind a load balancer.
+![Python](https://img.shields.io/badge/Python-3670A0?style=flat&logo=python&logoColor=ffdd54)
+![DigitalOcean](https://img.shields.io/badge/DigitalOcean-0080FF?style=flat&logo=digitalocean&logoColor=white)
+![Discord](https://img.shields.io/badge/Discord_alerts-5865F2?style=flat&logo=discord&logoColor=white)
+
+This is a simple script that will stop and start DigitalOcean Droplet instances if it fails to GET a particular URL. This is useful for maintaining Droplets that are not behind a load balancer.
+
+See also the AWS sibling: [ec2_maintainer](https://github.com/SurajBhari/ec2_maintainer).
 
 
 ## Flowchart
@@ -10,7 +16,7 @@ graph TD
   B --> C[Enter while loop]
   C --> D{URL reachable for T amount?}
   D -->|Yes| C
-  D -->|No| E[Restart the EC2 server<br>handle unreachable URL]
+  D -->|No| E[Restart the Droplet<br>handle unreachable URL]
   E --> C
 ```
 
